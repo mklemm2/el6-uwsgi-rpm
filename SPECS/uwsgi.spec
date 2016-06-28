@@ -1,5 +1,5 @@
 Name:           uwsgi
-Version:        2.0.10
+Version:        2.0.13.1
 Release:        2%{?dist}
 Summary:        Fast, self-healing, application container server
 Group:          System Environment/Daemons
@@ -8,9 +8,8 @@ URL:            http://projects.unbit.it/uwsgi
 Source0:        http://projects.unbit.it/downloads/%{name}-%{version}.tar.gz
 Source1:        rhel6.ini
 Source2:        uwsgi.init
-Patch0:         uwsgi_trick_chroot_rpmbuild.patch
-Patch1:         uwsgi_fix_rpath.patch
-BuildRequires:  python2-devel, libxml2-devel, libuuid-devel, ruby, ruby-devel
+Patch0:         uwsgi_rename_python.patch
+BuildRequires:  python35u-devel, libxml2-devel, libuuid-devel, ruby, ruby-devel
 BuildRequires:  libyaml-devel, perl-devel, pcre-devel, perl-ExtUtils-Embed
 
 %description
@@ -36,36 +35,13 @@ Requires: %{name}
 This package contains the development header files and libraries
 for uWSGI extensions
 
-
-%package -n %{name}-plugin-cgi
-Summary:  uWSGI - CGI plugin for uWSGI
-Group:    System Environment/Daemons
-Requires: %{name}
-
-%description -n %{name}-plugin-cgi
-This package contains the CGI plugin used with uWSGI.
-
-
-%package -n %{name}-plugin-python
+%package -n %{name}-plugin-python35
 Summary:  uWSGI - Plugin for Python support
 Group:    System Environment/Daemons
-Requires: python, %{name}
+Requires: python35u, %{name}
 
-%description -n %{name}-plugin-python
-This package contains the python plugin for uWSGI
-
-%package -n %{name}-plugin-rack
-Summary:  uWSGI - Plugin for Ruby rack support
-Group:    System Environment/Daemons
-Requires: ruby, %{name}
-
-%description -n %{name}-plugin-rack
-This package contains the Ruby rack plugin for uWSGI
-
-%package -n %{name}-plugin-psgi
-Summary:  uWSGI - Plugin for Perl PSGI support
-Group:    System Environment/Daemons
-Requires: perl, %{name}
+%description -n %{name}-plugin-python35
+This package contains the python3.5 plugin for uWSGI
 
 %package -n %{name}-plugin-http
 Summary:  uWSGI - Plugin for HTTP support
@@ -76,9 +52,6 @@ Requires: %{name}
 Summary:  uWSGI - Plugin for corerouter
 Group:    System Environment/Daemons
 Requires: %{name}
-
-%description -n %{name}-plugin-psgi
-This package contains the Perl PSGI plugin for uWSGI
 
 %description -n %{name}-plugin-http
 This package contains the HTTP plugin for uWSGI
@@ -91,10 +64,9 @@ This package contains the corerouter plugin for uWSGI
 cp -p %{SOURCE1} buildconf/
 echo "plugin_dir = %{_libdir}/%{name}" >> buildconf/$(basename %{SOURCE1})
 %patch0 -p1
-%patch1 -p1
 
 %build
-CFLAGS="%{optflags}" python uwsgiconfig.py --build rhel6
+CFLAGS="%{optflags}" python3.5 uwsgiconfig.py --build rhel6
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}
@@ -107,7 +79,7 @@ mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 %{__install} -d -m 0755 %{buildroot}%{_initrddir}
 %{__install} -p -m 0755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
 %{__install} -p -m 0644 *.h %{buildroot}%{_includedir}/%{name}
-%{__install} -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/%{name}
+%{__install} -p -m 0755 /usr/lib64/uwsgi/*_plugin.so %{buildroot}%{_libdir}/%{name}
 
 %pre
 getent group uwsgi >/dev/null || groupadd -r uwsgi
@@ -141,18 +113,8 @@ fi
 %files -n %{name}-devel
 %{_includedir}/%{name}
 
-%files -n %{name}-plugin-cgi
-%dir %{_libdir}/%{name}
-%{_libdir}/%{name}/cgi_plugin.so
-
-%files -n %{name}-plugin-python
-%{_libdir}/%{name}/python_plugin.so
-
-%files -n %{name}-plugin-rack
-%{_libdir}/%{name}/rack_plugin.so
-
-%files -n %{name}-plugin-psgi
-%{_libdir}/%{name}/psgi_plugin.so
+%files -n %{name}-plugin-python35
+%{_libdir}/%{name}/python35_plugin.so
 
 %files -n %{name}-plugin-http
 %{_libdir}/%{name}/http_plugin.so
