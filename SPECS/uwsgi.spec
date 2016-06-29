@@ -38,7 +38,7 @@ for uWSGI extensions
 %package -n %{name}-plugin-python35
 Summary:  uWSGI - Plugin for Python support
 Group:    System Environment/Daemons
-Requires: python35u, %{name}
+Requires: python(abi) >= 3.5 , %{name}
 
 %description -n %{name}-plugin-python35
 This package contains the python3.5 plugin for uWSGI
