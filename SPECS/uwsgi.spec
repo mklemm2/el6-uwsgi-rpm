@@ -10,7 +10,7 @@ Source1:        rhel6.ini
 Source2:        uwsgi.init
 #Patch0:         uwsgi_rename_python.patch
 BuildRequires:  python35u-devel, libxml2-devel, libuuid-devel, ruby, ruby-devel
-BuildRequires:  libyaml-devel, perl-devel, pcre-devel, perl-ExtUtils-Embed
+BuildRequires:  libyaml-devel, perl-devel, pcre-devel, perl-ExtUtils-Embed gcc
 
 %description
 uWSGI is a fast (pure C), self-healing, developer/sysadmin-friendly
