@@ -68,6 +68,8 @@ echo "plugin_dir = %{_libdir}/%{name}" >> buildconf/$(basename %{SOURCE1})
 %build
 CFLAGS="%{optflags}" python3.5 uwsgiconfig.py --build rhel6
 CFLAGS="%{optflags}" PYTHON=python3.5 ./uwsgi --build-plugin "plugins/python python35"
+CFLAGS="%{optflags}" PYTHON=python3.5 ./uwsgi --build-plugin "plugins/corerouter"
+CFLAGS="%{optflags}" PYTHON=python3.5 ./uwsgi --build-plugin "plugins/http"
 
 %install
 mkdir -p %{buildroot}%{_sysconfdir}/%{name}
@@ -80,7 +82,7 @@ mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 %{__install} -d -m 0755 %{buildroot}%{_initrddir}
 %{__install} -p -m 0755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
 %{__install} -p -m 0644 *.h %{buildroot}%{_includedir}/%{name}
-%{__install} -p -m 0755 /usr/lib64/uwsgi/*_plugin.so %{buildroot}%{_libdir}/%{name}
+#%{__install} -p -m 0755 /usr/lib64/uwsgi/*_plugin.so %{buildroot}%{_libdir}/%{name}
 %{__install} -p -m 0755 *_plugin.so %{buildroot}%{_libdir}/%{name}
 
 %pre
